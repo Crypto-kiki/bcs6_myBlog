@@ -7,20 +7,26 @@ export async function generateStaticParams() {
   }));
 }
 
-// eslint아래 주석을 달아줘야, params, searchParams가 사용될 때 에러가 발생하면 붙여줌. 바로 함수 위
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function BlogPostPage({ params }: any) {
-  //   console.log(params);  // params값 확인해보기(slug)
-  const postData = await getPostData(params.slug);
-
-  console.log(postData);
+  const { slug } = await params;
+  const postData = await getPostData(slug);
 
   return (
     <article className="max-w-2xl mx-auto p-8">
+      {postData.thumbnail && (
+        <img
+          src={postData.thumbnail}
+          alt={postData.title}
+          className="w-full h-64 object-cover mb-8 rounded-lg"
+        />
+      )}
       <h1 className="text-4xl font-bold mb-4">{postData.title}</h1>
       <p className="text-sm text-gray-500 mb-8">{postData.date}</p>
-      <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+      <div
+        className="[&>ol>li]:text-red-500 [&>h1]:text-2xl [&>h1]:font-bold"
+        dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
+      />
     </article>
   );
 }
